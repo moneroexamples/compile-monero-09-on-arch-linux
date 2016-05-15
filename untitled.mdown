@@ -1,0 +1,29 @@
+Arch Linux just upgrade GCC 5.4 to 6.1. With this change, Monero no longer compiles. Compilation fails for the following errors:
+
+#### 1. error: value-initialization of incomplete type
+
+```
+/home/mwo/bitmonero/src/crypto/crypto.cpp:275:58: error: value-initialization of incomplete type ‘crypto::rs_comm::<anonymous struct> []’
+     return sizeof(rs_comm) + pubs_count * sizeof(rs_comm().ab[0]);
+```
+
+This can be fixed by changing
+
+```
+return sizeof(rs_comm) + pubs_count * sizeof(rs_comm().ab[0]);
+```
+into equivalent expression of
+```
+return sizeof(rs_comm) + pubs_count * 2 * sizeof(ec_point);
+```
+
+#### 2. error: throw will always call terminate()
+
+```
+ /home/mwo/bitmonero/contrib/epee/include/misc_log_ex.h:1430:130: error: throw will always call terminate() [-Werror=terminate]
+ e) {LOG_ERROR(message); std::stringstream ss; ss << message; throw std::runtime_error(ss.str());}
+```
+
+
+make CXXFLAGS='-Wno-error=terminate -lboost_regex'
+
