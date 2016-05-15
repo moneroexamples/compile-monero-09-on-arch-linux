@@ -23,7 +23,7 @@ git clone https://github.com/monero-project/bitmonero.git
 cd bitmonero/
 
 # compile the release version.
-make release # or make -j number_of_threads, e.g., make -j 2
+make release CXXFLAGS='-Wno-error=terminate -Wno-error=misleading-indentation'
 
 # alternatively `make` can be used instead of `make release`. This compiles
 # the latest, development version of the source code with unit tests. 
