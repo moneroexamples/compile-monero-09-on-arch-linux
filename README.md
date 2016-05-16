@@ -1,6 +1,6 @@
 # Compile Monero 0.9 on Arch Linux
 
-The example shows how to compile the current github version of [Monero](https://getmonero.org/), as of 15 May 2016, on [Arch Linux](https://www.archlinux.org/). The current version of gcc on Arch is 6.1, which is much newer than that in other distribution, e.g., Ubuntu uses gcc 5.3. Because of [changes gcc 6](https://gcc.gnu.org/gcc-6/changes.html) introduced, normal monero compilation procedure avaliable for Ubuntu will fail. To overcome this, a one line in Monero code needs to be changed to confrom to gcc 6.1, and also two treat-warning-as-error need to be disabled. 
+The example shows how to compile the current github version of [Monero](https://getmonero.org/), as of 15 May 2016, on [Arch Linux](https://www.archlinux.org/). The current version of gcc on Arch is 6.1, which is much newer than that in other distribution, e.g., Ubuntu uses gcc 5.3. Because of [changes gcc 6](https://gcc.gnu.org/gcc-6/changes.html) introduced, normal monero compilation procedure avaliable for Ubuntu will fail. To overcome this, a one line in Monero code needs to be changed to confrom to gcc 6.1, and also two treat-warning-as-error need to be disabled.
 
 ## Dependencies
 Before proceeding with the compilation, the following packages are required:
@@ -22,11 +22,14 @@ git clone https://github.com/monero-project/bitmonero.git
 # go into bitmonero folder
 cd bitmonero/
 
+# apply a patch for gcc 6.1
+wget -q -O - https://raw.githubusercontent.com/moneroexamples/compile-monero-09-on-arch-linux/master/fix_value_initialization.patch | git apply  -v -
+
 # compile the release version.
 make release CXXFLAGS='-Wno-error=terminate -Wno-error=misleading-indentation'
 
 # alternatively `make` can be used instead of `make release`. This compiles
-# the latest, development version of the source code with unit tests. 
+# the latest, development version of the source code with unit tests.
 # It might be unstable as its not officially released.
 ```
 
