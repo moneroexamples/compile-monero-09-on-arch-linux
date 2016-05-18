@@ -1,6 +1,6 @@
 # Compile Monero 0.9 on Arch Linux
 
-The example shows how to compile the current github version of [Monero](https://getmonero.org/), as of 15 May 2016, on [Arch Linux](https://www.archlinux.org/). The current version of gcc on Arch is 6.1, which is much newer than that in other distribution, e.g., Ubuntu uses gcc 5.3. Because of [changes gcc 6](https://gcc.gnu.org/gcc-6/changes.html) introduced, normal monero compilation procedure avaliable for Ubuntu will fail. To overcome this, a one line in Monero code needs to be changed to confrom to gcc 6.1, and also two treat-warning-as-error need to be disabled.
+The example shows how to compile the current github version of [Monero](https://getmonero.org/), as of 18 May 2016, on [Arch Linux](https://www.archlinux.org/). The current version of gcc on Arch is 6.1, which is much newer than that in other distribution, e.g., Ubuntu uses gcc 5.3. Because of [changes gcc 6](https://gcc.gnu.org/gcc-6/changes.html) introduced, normal monero compilation procedure avaliable for Ubuntu will fail. To overcome this, a one line in Monero code needs to be changed to confrom to gcc 6.1, and also two treat-warning-as-error need to be disabled.
 
 ## Dependencies
 Before proceeding with the compilation, the following packages are required:
