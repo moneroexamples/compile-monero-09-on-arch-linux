@@ -49,7 +49,7 @@ After successful compilation, the Monero binaries should be located in `./build/
 └── simplewallet
 ```
 
-I usually move the binaries into `/opt/bitmonero/` folder. This can be done as follows:
+I usually move the binaries into `/opt/bitmonero/` folder. This can be done in the following way:
 
 ```bash
 # optional
