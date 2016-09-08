@@ -16,10 +16,10 @@ sudo pacman -Su --needed base-devel cmake boost miniupnpc unbound graphviz doxyg
 ## Compilation
 
 ```bash
-# download the latest bitmonero source code from github
+# download the latest monero source code from github
 git clone https://github.com/monero-project/bitmonero.git
 
-# go into bitmonero folder
+# go into monero folder
 cd bitmonero/
 
 # apply patch for using Onion Blockchain Explorer (optional)
@@ -54,54 +54,49 @@ After successful compilation, the Monero binaries should be located in `./build/
 └── simplewallet
 ```
 
-I usually move the binaries into `/opt/bitmonero/` folder. This can be done in the following way:
+I usually move the binaries into `/opt/monero/` folder. This can be done in the following way:
 
 ```bash
 # optional
-sudo mkdir -p /opt/bitmonero
-sudo mv -v ./build/release/bin/* /opt/bitmonero/
+sudo mkdir -p /opt/monero
+sudo mv -v ./build/release/bin/* /opt/monero/
 ```
 
 This should result in:
 ```bash
-/opt/bitmonero
-├── bitmonerod
-├── blockchain_converter
-├── blockchain_dump
-├── blockchain_export
-├── blockchain_import
-├── cn_deserialize
-├── connectivity_tool
-├── simpleminer
-└── simplewallet
+/opt/monero/
+├── monero-blockchain-export
+├── monero-blockchain-import
+├── monerod
+└── monero-wallet-cli
 ```
 
-Now we can start the Monero daemon, i.e., `bitmonerod`, and let it
-download the blockchain and synchronize itself with the Monero network. After that, you can run your the `simplewallet`.
+Now we can start the Monero daemon, i.e., `monerod`, and let it
+download the blockchain and synchronize itself with the Monero network. After that, you can run your the `monero-wallet-cli`.
 
 ```bash
 # launch the Monero daemon and let it synchronize with the Monero network
-/opt/bitmonero/bitmonerod
+/opt/monero/monerod
 
 # launch the Monero wallet
-/opt/bitmonero/simplewallet
+/opt/monero/monero-wallet-cli
 ```
 
 ## Useful aliases (with rlwrap)
-`bitmonerod` and `simplewallet` do not have tab-compliton nor history.
+`monerod` and `monero-wallet-cli` do not have tab-compliton nor history.
 This problem can be overcome using [rlwrap](https://github.com/hanslub42/rlwrap).
 
 ```bash
 # install rlwrap
 sudo pacman -Su rlwrap wget
 
-# download bitmonerod and simplewallet commands files
+# download monerod and monero-wallet-cli commands files
 wget -O ~/.bitmonero/monerocommands_bitmonerod.txt https://raw.githubusercontent.com/moneroexamples/compile-monero-09-on-xubuntu-16-04-beta-1/master/monerocommands_bitmonerod.txt
 wget -O ~/.bitmonero/monerocommands_simplewallet.txt https://raw.githubusercontent.com/moneroexamples/compile-monero-09-on-xubuntu-16-04-beta-1/master/monerocommands_simplewallet.txt
 
 # add aliases to .bashrc
-echo "alias moneronode='rlwrap -f ~/.bitmonero/monerocommands_simplewallet.txt /opt/bitmonero/bitmonerod'" >> ~/.bashrc
-echo "alias monerowallet='rlwrap -f ~/.bitmonero/monerocommands_bitmonerod.txt /opt/bitmonero/simplewallet'" >> ~/.bashrc
+echo "alias moneronode='rlwrap -f ~/.monero/monerocommands_simplewallet.txt /opt/monero/monerod'" >> ~/.bashrc
+echo "alias monerowallet='rlwrap -f ~/.bitmonero/monerocommands_bitmonerod.txt /opt/monero/monero-wallet-cli'" >> ~/.bashrc
 
 # reload .bashrc
 source ~/.bashrc
@@ -129,95 +124,77 @@ When the compilation finishes, a number of static Monero libraries
 should be generated. We will need them to link against in our C++11 programs.
 
 Since they are spread out over different subfolders of the `./build/` folder, it is easier to just copy them into one folder. I assume that
- `/opt/bitmonero-dev/libs` is the folder where they are going to be copied to.
+ `/opt/monero-dev/libs` is the folder where they are going to be copied to.
 
 ```bash
 # create the folder
-sudo mkdir -p /opt/bitmonero-dev/libs
+sudo mkdir -p /opt/monero-dev/libs
 
 # find the static libraries files (i.e., those with extension of *.a)
-# and copy them to /opt/bitmonero-dev/libs
-# assuming you are still in bitmonero/ folder which you downloaded from
+# and copy them to /opt/monero-dev/libs
+# assuming you are still in monero/ folder which you downloaded from
 # github
-sudo find ./build/ -name '*.a' -exec cp -v {} /opt/bitmonero-dev/libs  \;
+sudo find ./build/ -name '*.a' -exec cp -v {} /opt/monero-dev/libs  \;
 ```
 
  This should results in the following file structure:
 
  ```bash
-/opt/bitmonero-dev/
-└── libs
-    ├── libblockchain_db.a
-    ├── libblocks.a
-    ├── libcommon.a
-    ├── libcrypto.a
-    ├── libcryptonote_core.a
-    ├── libcryptonote_protocol.a
-    ├── libdaemonizer.a
-    ├── libgtest.a
-    ├── libgtest_main.a
-    ├── liblmdb.a
-    ├── libminiupnpc.a
-    ├── libmnemonics.a
-    ├── libotshell_utils.a
-    ├── libp2p.a
-    ├── librpc.a
-    └── libwallet.a
+ /opt/monero-dev/libs/
+ ├── libblockchain_db.a
+ ├── libblocks.a
+ ├── libcommon.a
+ ├── libcrypto.a
+ ├── libcryptonote_core.a
+ ├── libcryptonote_protocol.a
+ ├── libdaemonizer.a
+ ├── libgtest.a
+ ├── libgtest_main.a
+ ├── liblmdb.a
+ ├── libminiupnpc.a
+ ├── libmnemonics.a
+ ├── libotshell_utils.a
+ ├── libp2p.a
+ ├── libringct.a
+ ├── librpc.a
+ └── libwallet.a
 ```
 
 ### Monero headers
 
 Now we need to get Monero headers, as this is our interface to the
-Monero libraries. Folder `/opt/bitmonero-dev/headers` is assumed
+Monero libraries. Folder `/opt/monero-dev/headers` is assumed
 to hold the headers.
 
 ```bash
 # create the folder
-sudo mkdir -p /opt/bitmonero-dev/headers
+sudo mkdir -p /opt/monero-dev/headers
 
 # find the header files (i.e., those with extension of *.h)
-# and copy them to /opt/bitmonero-dev/headers.
+# and copy them to /opt/monero-dev/headers.
 # but this time the structure of directories is important
 # so rsync is used to find and copy the headers files
-sudo rsync -zarv --include="*/" --include="*.h" --exclude="*" --prune-empty-dirs ./ /opt/bitmonero-dev/headers
+sudo rsync -zarv --include="*/" --include="*.h" --exclude="*" --prune-empty-dirs ./ /opt/monero-dev/headers
 ```
 
 This should results in the following file structure:
 
 ```bash
-# only src/ folder with up to 3 level nesting is shown
-
-/opt/bitmonero-dev/headers/src/
-├── blockchain_db
-│   ├── berkeleydb
-│   │   └── db_bdb.h
-│   ├── blockchain_db.h
-│   ├── db_types.h
-│   └── lmdb
-│       └── db_lmdb.h
-├── blockchain_utilities
-│   ├── blockchain_utilities.h
-│   ├── blocksdat_file.h
-│   ├── bootstrap_file.h
-│   ├── bootstrap_serialization.h
-│   └── fake_core.h
-├── blocks
-│   └── blocks.h
-├── common
-│   ├── base58.h
-│   ├── boost_serialization_helper.h
-│   ├── command_line.h
-│   ├── dns_utils.h
-│   ├── http_connection.h
-│   ├── i18n.h
-│   ├── int-util.h
-│   ├── pod-class.h
-│   ├── rpc_client.h
-│   ├── scoped_message_writer.h
-│   ├── unordered_containers_boost_serialization.h
-│   ├── util.h
-│   └── varint.h
-# ... the rest not shown to save some space
+# ... only part shown to save some space
+├── src
+│   ├── blockchain_db
+│   │   ├── berkeleydb
+│   │   ├── blockchain_db.h
+│   │   ├── db_types.h
+│   │   └── lmdb
+│   ├── blockchain_utilities
+│   │   ├── blockchain_utilities.h
+│   │   ├── blocksdat_file.h
+│   │   ├── bootstrap_file.h
+│   │   ├── bootstrap_serialization.h
+│   │   └── fake_core.h
+│   ├── blocks
+│   │   └── blocks.h
 ```
 
 ## Other examples
