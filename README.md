@@ -10,7 +10,7 @@ Before proceeding with the compilation, the following packages are required:
 sudo pacman -Su --needed git
 
 # install dependencies to be able to compile Monero
-sudo pacman -Su --needed base-devel cmake boost miniupnpc unbound graphviz doxygen
+sudo pacman -Su --needed base-devel cmake boost miniupnpc unbound graphviz doxygen libunwind pkg-config openssl curl
 ```
 
 ## Compilation
